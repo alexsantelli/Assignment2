@@ -7,13 +7,19 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     protected Button save, cancel;
     protected FloatingActionButton addUser;
+    protected ListView listView;
 
 
     @Override
@@ -22,19 +28,30 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         addUser = findViewById(R.id.addUser);
+        listView = findViewById(R.id.studentList);
+
+        listStudents();
         addUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this, Popup.class));
+                //Opening popup
+                Popup pop = new Popup();
+                pop.show(getSupportFragmentManager(), "Add Person Dialog");
             }
         });
+    }
 
-        SQLiteDatabase myDB = this.openOrCreateDatabase("Profiles", MODE_PRIVATE, null);
-        myDB.execSQL("CREATE TABLE IF NOT EXISTS profiles (Surname String, Lastname String, id int(8), GPA float)");
-        //Inserting content into DB
-        //myDB.execSQL("INSERT INTO profiles (Surname, Lastname, id, GPA) VALUES ('Alex', 'Santelli', 40164629, 4.1)");
-        //Pulling someone from DB
-
-        Cursor c = myDB.rawQuery("SELECT * FROM profiles", null);
+    public void listStudents(){
+        //get list From database
+        DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
+        List<Student> studentList = dbHelper.getAllStudents();
+        //Add Just names to list to be displayed
+        List<String> outputNameList = new ArrayList<String>();
+        int index = 1;
+        for (Student s : studentList){
+            outputNameList.add( (index++) + ". " + s.getName() + ", " + s.getSurName());
+        }
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, outputNameList);
+        listView.setAdapter(arrayAdapter);
     }
 }

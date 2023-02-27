@@ -44,7 +44,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(sqLiteDatabase);
     }
 
-    public long insertCourse(Student student){
+    public long insertStudent(Student student){
         String firstName = student.getSurName();
         String lastName = student.getName();
         int ID = student.getID();
