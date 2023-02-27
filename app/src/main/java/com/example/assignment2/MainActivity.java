@@ -3,12 +3,11 @@ package com.example.assignment2;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -17,8 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    protected Button save, cancel;
-    protected FloatingActionButton addUser;
+    protected FloatingActionButton addUserClick;
     protected ListView listView;
 
 
@@ -27,19 +25,23 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        addUser = findViewById(R.id.addUser);
+        addUserClick = findViewById(R.id.addUser);
         listView = findViewById(R.id.studentList);
-
         listStudents();
-        addUser.setOnClickListener(new View.OnClickListener() {
+
+
+
+        addUserClick.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //Opening popup
                 Popup pop = new Popup();
                 pop.show(getSupportFragmentManager(), "Add Person Dialog");
+                listStudents();
             }
         });
     }
+
 
     public void listStudents(){
         //get list From database
@@ -47,11 +49,33 @@ public class MainActivity extends AppCompatActivity {
         List<Student> studentList = dbHelper.getAllStudents();
         //Add Just names to list to be displayed
         List<String> outputNameList = new ArrayList<String>();
-        int index = 1;
         for (Student s : studentList){
-            outputNameList.add( (index++) + ". " + s.getName() + ", " + s.getSurName());
+            outputNameList.add( s.getCount() + ". " + s.getName() + ", " + s.getSurName());
         }
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, outputNameList);
         listView.setAdapter(arrayAdapter);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                String firstName = "SurName: " + studentList.get(position).getSurName();
+                String lastName = "Name: " + studentList.get(position).getName();
+                String ID = "ID: " + studentList.get(position).getID();
+                String GPA = "GPA: " + studentList.get(position).getGPA();
+                String dateCreated = "Profile created: " + studentList.get(position).getDateCreated();
+                //TODO: access history (new access)
+
+                Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
+                intent.putExtra(Config.COLUMN_SURNAME, firstName);
+                intent.putExtra(Config.COLUMN_NAME, lastName);
+                intent.putExtra(Config.COLUMN_ID, ID);
+                intent.putExtra(Config.COLUMN_GPA, GPA);
+                intent.putExtra(Config.COLUMN_DATECREATED, dateCreated);
+                startActivity(intent);
+            }
+        });
+
+
     }
 }

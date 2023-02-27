@@ -1,7 +1,7 @@
 package com.example.assignment2;
 
 import android.os.Bundle;
-import android.util.DisplayMetrics;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.content.Context;
 import android.view.View;
@@ -12,11 +12,14 @@ import android.widget.Toast;
 
 import androidx.fragment.app.DialogFragment;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class Popup extends DialogFragment {
 
     private EditText firstNameEditText, lastNameEditText, IDEditText, GPAEditText;
     private Button saveButton, cancelButton;
-    private Context context = null;
+    private final Context context = null;
 
     public Popup() {
         // Required empty public constructor
@@ -50,13 +53,17 @@ public class Popup extends DialogFragment {
                 String lastName = lastNameEditText.getText().toString();
                 String temp = IDEditText.getText().toString();
                 String temp2 = GPAEditText.getText().toString();
-                Integer ID = Integer.parseInt(temp);
-                Double GPA = Double.parseDouble(temp2);
-                if(firstName.isEmpty() || lastName.isEmpty() || temp.isEmpty() || temp2.isEmpty()){
-                    Toast.makeText(getActivity(), "Fields cannot be blank!", Toast.LENGTH_SHORT).show();
+                int ID = Integer.parseInt(temp);
+                double GPA = Double.parseDouble(temp2);
+                if(firstName.isEmpty() || lastName.isEmpty() || ID < 10000000 || ID > 99999999 || GPA < 0 || GPA > 4.30){
+                    Toast.makeText(getActivity(), "Fields cannot be blank or Invalid Entries", Toast.LENGTH_SHORT).show();
                 }
                 else{
-                    dbhelper.insertStudent(new Student(firstName, lastName, ID, GPA));
+                    //getting creation date
+                    SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy @ HH:mm:ss");
+                    Date todaysDate = new Date();
+                    //Inserting new student
+                    dbhelper.insertStudent(new Student(-1, firstName, lastName, ID, GPA, formatter.format(todaysDate)));
                     ((MainActivity)getActivity()).listStudents();
                     dismiss();
                 }

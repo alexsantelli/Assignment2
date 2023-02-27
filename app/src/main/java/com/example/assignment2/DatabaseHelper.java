@@ -7,12 +7,12 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.widget.Toast;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import androidx.annotation.Nullable;
 
-import java.sql.SQLOutput;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -21,21 +21,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 1;
     private Context context = null;
 
-    public DatabaseHelper(@Nullable Context context) {
+    SQLiteDatabase database;
+
+    public DatabaseHelper(Context context) {
         super(context, Config.DATABASE_NAME, null, DATABASE_VERSION);
-        this.context = context;
+        database = getWritableDatabase();
     }
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        String CREATE_TABLE = "CREATE TABLE " + Config.STUDENT_TABLE + " ("
-                + Config.COLUMN_SURNAME + "TEXT NOT NULL,"
-                + Config.COLUMN_NAME + "TEXT NOT NULL,"
-                + Config.COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-                + Config.COLUMN_GPA + " DOUBLE NOT NULL"
-                + ")";
+        String CREATE_STUDENT_TABLE = "CREATE TABLE " + Config.STUDENT_TABLE + " ( "
+                + Config.COLUMN_COUNT + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + Config.COLUMN_NAME + " TEXT NOT NULL,"
+                + Config.COLUMN_SURNAME + " TEXT NOT NULL,"
+                + Config.COLUMN_ID + " INTEGER NOT NULL,"
+                + Config.COLUMN_GPA + " DOUBLE NOT NULL,"
+                + Config.COLUMN_DATECREATED + " TEXT NOT NULL)";
 
-        sqLiteDatabase.execSQL(CREATE_TABLE);
+        sqLiteDatabase.execSQL(CREATE_STUDENT_TABLE);
     }
 
     @Override
@@ -45,27 +48,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public long insertStudent(Student student){
-        String firstName = student.getSurName();
-        String lastName = student.getName();
-        int ID = student.getID();
-        double GPA = student.getGPA();
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put(Config.COLUMN_SURNAME, firstName);
-        contentValues.put(Config.COLUMN_NAME, lastName);
-        contentValues.put(Config.COLUMN_ID, ID);
-        contentValues.put(Config.COLUMN_GPA, GPA);
+        contentValues.put(Config.COLUMN_NAME, student.getName());
+        contentValues.put(Config.COLUMN_SURNAME, student.getSurName());
+        contentValues.put(Config.COLUMN_ID, student.getID());
+        contentValues.put(Config.COLUMN_GPA, student.getGPA());
+        contentValues.put(Config.COLUMN_DATECREATED, student.getDateCreated());
         try {
             db.insertOrThrow(Config.STUDENT_TABLE, null, contentValues);
             return 1;
         }catch (Exception e){
-            Toast.makeText(this.context, "DB Error: "+ e.getMessage(), Toast.LENGTH_SHORT).show();
-            System.out.println("DB error in insertCourse");
+            Toast.makeText(this.context, "DB Error: "+ e.getMessage(), Toast.LENGTH_LONG).show();
+            System.out.println("DB error in insertStudents");
             return 0;
         }finally {
             db.close();
         }
     }
+
 
     public List<Student> getAllStudents(){
         List<Student> students = new ArrayList<>();
@@ -75,17 +76,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             cursor = db.query(Config.STUDENT_TABLE, null, null, null, null, null, null);
             if (cursor.moveToFirst()){
                 do{
-                    @SuppressLint("Range") String firstName = cursor.getString(cursor.getColumnIndex(Config.COLUMN_SURNAME));
-                    @SuppressLint("Range") String lastName = cursor.getString(cursor.getColumnIndex(Config.COLUMN_NAME));
-                    @SuppressLint("Range") int ID = cursor.getInt(cursor.getColumnIndex(Config.COLUMN_ID));
-                    @SuppressLint("Range") double GPA = cursor.getDouble(cursor.getColumnIndex(Config.COLUMN_GPA));
-                    Student student = new Student(firstName, lastName, ID, GPA);
-                    students.add(student);
+                    @SuppressLint("Range")int count = cursor.getInt(cursor.getColumnIndex(Config.COLUMN_COUNT));
+                    @SuppressLint("Range")String firstName = cursor.getString(cursor.getColumnIndex(Config.COLUMN_SURNAME));
+                    @SuppressLint("Range")String lastName = cursor.getString(cursor.getColumnIndex(Config.COLUMN_NAME));
+                    @SuppressLint("Range")int ID = cursor.getInt(cursor.getColumnIndex(Config.COLUMN_ID));
+                    @SuppressLint("Range")double GPA = cursor.getDouble(cursor.getColumnIndex(Config.COLUMN_GPA));
+                    @SuppressLint("Range")String todaysDate = cursor.getString(cursor.getColumnIndex(Config.COLUMN_DATECREATED));
+
+                    students.add(new Student(count, firstName, lastName, ID, GPA, todaysDate));
                 }while (cursor.moveToNext());
             }
         }catch (Exception e){
-            Toast.makeText(this.context, "DB Error: "+ e.getMessage(), Toast.LENGTH_SHORT).show();
-            System.out.println("DB error in getAllCourses");
+            Toast.makeText(this.context, "DB Error: "+ e.getMessage(), Toast.LENGTH_LONG).show();
+            System.out.println("DB error in getAllStudents");
             return Collections.emptyList();
         }finally {
             db.close();
@@ -94,3 +97,4 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 }
+
