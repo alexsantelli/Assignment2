@@ -37,13 +37,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + Config.COLUMN_ID + " INTEGER NOT NULL,"
                 + Config.COLUMN_GPA + " DOUBLE NOT NULL,"
                 + Config.COLUMN_DATECREATED + " TEXT NOT NULL)";
-
         sqLiteDatabase.execSQL(CREATE_STUDENT_TABLE);
+
+        String CREATE_ACCESS_TABLE = "CREATE TABLE " + Config.ACCESS_TABLE + " ( "
+                + Config.COLUMN_ACCESSID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + Config.COLUMN_ID + " INTEGER NOT NULL,"
+                + Config.COLUMN_ACCCESSTYPE + " TEXT NOT NULL,"
+                + Config.COLUMN_ACCESSTIME + " TEXT NOT NULL)";
+        sqLiteDatabase.execSQL(CREATE_ACCESS_TABLE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + Config.STUDENT_TABLE +";");
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + Config.ACCESS_TABLE + ";");
         onCreate(sqLiteDatabase);
     }
 
@@ -66,8 +73,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             db.close();
         }
     }
-
-
     public List<Student> getAllStudents(){
         List<Student> students = new ArrayList<>();
         SQLiteDatabase db = getReadableDatabase();
@@ -95,6 +100,48 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
         return students;
     }
-
+    public long insertAccess(Student student, String type){
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-mm-dd @ hh:mm:ss");
+        Date todaysDate = new Date();
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(Config.COLUMN_ID, student.getID());
+        contentValues.put(Config.COLUMN_ACCCESSTYPE, type);
+        contentValues.put(Config.COLUMN_ACCESSTIME, formatter.format(todaysDate));
+        try {
+            db.insertOrThrow(Config.ACCESS_TABLE, null, contentValues);
+            return 1;
+        }catch (Exception e){
+            Toast.makeText(this.context, "DB Error: "+ e.getMessage(), Toast.LENGTH_LONG).show();
+            System.out.println("DB error in insertStudents");
+            return 0;
+        }finally {
+            db.close();
+        }
+    }
+    public List<AccessRecord> getAllAccessRecords(){
+        List<AccessRecord> records =  new ArrayList<>();
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = null;
+        try{
+            cursor = db.query(Config.ACCESS_TABLE, null, null, null, null, null, null);
+            if (cursor.moveToFirst()){
+                do{
+                    @SuppressLint("Range")int accessID = cursor.getInt(cursor.getColumnIndex(Config.COLUMN_ACCESSID));
+                    @SuppressLint("Range")int studentID = cursor.getInt(cursor.getColumnIndex(Config.COLUMN_ID));
+                    @SuppressLint("Range")String type = cursor.getString(cursor.getColumnIndex(Config.COLUMN_ACCCESSTYPE));
+                    @SuppressLint("Range")String accessTime = cursor.getString(cursor.getColumnIndex(Config.COLUMN_ACCESSTIME));
+                    records.add(new AccessRecord(accessID, studentID, type, accessTime));
+                }while (cursor.moveToNext());
+            }
+        }catch (Exception e){
+            Toast.makeText(this.context, "DB Error: "+ e.getMessage(), Toast.LENGTH_LONG).show();
+            System.out.println("DB error in getAllAccessRecords");
+            return Collections.emptyList();
+        }finally {
+            db.close();
+        }
+        return records;
+    }
 }
 

@@ -23,10 +23,9 @@
         <activity android:name=".Popup"
             android:theme="@style/AppTheme.ClearBackgroundTheme"
             >
-
-
         </activity>
-        <activity android:name=".ProfileActivity"></activity>
+        <activity android:name=".ProfileActivity"
+            android:parentActivityName=".MainActivity"></activity>
     </application>
 
 </manifest>

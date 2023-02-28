@@ -63,8 +63,11 @@ public class Popup extends DialogFragment {
                     SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy @ HH:mm:ss");
                     Date todaysDate = new Date();
                     //Inserting new student
-                    dbhelper.insertStudent(new Student(-1, firstName, lastName, ID, GPA, formatter.format(todaysDate)));
+                    Student stud = new Student(-1, firstName, lastName, ID, GPA, formatter.format(todaysDate));
+                    dbhelper.insertStudent(stud);
                     ((MainActivity)getActivity()).listStudents();
+                    //TODO: Create Insert
+                    dbhelper.insertAccess(stud, "Created");
                     dismiss();
                 }
             }

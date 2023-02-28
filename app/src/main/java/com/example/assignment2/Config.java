@@ -11,5 +11,13 @@ public class Config {
     public static final String COLUMN_GPA = "GPA";
     public static final String COLUMN_DATECREATED = "dateCreated";
 
+    //Access table
+    public static final String ACCESS_TABLE = "access";
+
+    public static final String COLUMN_PROFILEID = "profileID";
+    public static final String COLUMN_ACCESSID = "accessID";
+    public static final String COLUMN_ACCCESSTYPE = "type";
+    public static final String COLUMN_ACCESSTIME = "time";
+
 
 }
