@@ -44,6 +44,9 @@ public class ProfileActivity extends AppCompatActivity {
             Intent intent = getIntent();
             IDSearch = intent.getStringExtra(Config.COLUMN_ID).substring(4);
             dbHelper.deleteStudent(IDSearch);
+            Intent intent2 = new Intent(ProfileActivity.this, MainActivity.class);
+            startActivity(intent2);
+
 
             //TODO: delete current User
         }

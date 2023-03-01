@@ -159,7 +159,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 insertAccess(studentList.get(i), "DELETED");
                 SQLiteDatabase db = getReadableDatabase();
                 //TODO: Delete
-                //db.delete(Config.STUDENT_TABLE,Config.COLUMN_ID+" = ?",new String[]{id});
+                db.delete(Config.STUDENT_TABLE,Config.COLUMN_ID+" = ?",new String[]{id});
             }
         }
 
