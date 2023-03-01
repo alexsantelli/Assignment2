@@ -65,8 +65,7 @@ public class Popup extends DialogFragment {
                     //Inserting new student
                     Student stud = new Student(-1, firstName, lastName, ID, GPA, formatter.format(todaysDate));
                     dbhelper.insertStudent(stud);
-                    ((MainActivity)getActivity()).listStudents();
-                    //TODO: Create Insert
+                    ((MainActivity)getActivity()).listStudentsbyName();
                     dbhelper.insertAccess(stud, "Created");
                     dismiss();
                 }

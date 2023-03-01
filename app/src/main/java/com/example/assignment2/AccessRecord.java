@@ -10,6 +10,10 @@ public class AccessRecord {
         this.type = type;
         this.dateTime = dateTime;
     }
+    public AccessRecord(int id, String type){
+        this.ID = id;
+        this.type = type;
+    }
 
     public int getAccessID() {
         return accessID;

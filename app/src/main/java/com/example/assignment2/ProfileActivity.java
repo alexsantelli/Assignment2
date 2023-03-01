@@ -1,11 +1,15 @@
 package com.example.assignment2;
 
+import static java.lang.Integer.parseInt;
+
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,6 +22,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     private TextView firstname, lastname, id, gpa, dateCreated;
     ListView accessList;
+    private String IDSearch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -27,18 +32,35 @@ public class ProfileActivity extends AppCompatActivity {
     }
     //back button
     //TODO: Add Close indicator
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                Intent intent = new Intent(ProfileActivity.this, MainActivity.class );
-                startActivity(intent);
-                finish();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
+    public boolean onCreateOptionsMenu(Menu eventViewToggle) {
+        eventViewToggle.add("Delete Current Student");
+        return super.onCreateOptionsMenu(eventViewToggle);
     }
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item){
+        if(item.getItemId() == 0)
+        {
+            DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
+            Intent intent = getIntent();
+            IDSearch = intent.getStringExtra(Config.COLUMN_ID).substring(4);
+            dbHelper.deleteStudent(IDSearch);
+
+            //TODO: delete current User
+        }
+        return super.onOptionsItemSelected(item);
+    }
+//    @Override
+//    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+//        switch (item.getItemId()) {
+//            case android.R.id.home:
+//                Intent intent = new Intent(ProfileActivity.this, MainActivity.class );
+//                startActivity(intent);
+//                finish();
+//                return true;
+//            default:
+//                return super.onOptionsItemSelected(item);
+//        }
+//    }
 
     private void setupUI() {
         firstname = findViewById(R.id.textViewSurname);

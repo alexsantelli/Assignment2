@@ -143,5 +143,28 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
         return records;
     }
+    public void deleteStudent(String id){
+        List<Student> studentList = getAllStudents();
+        int idInteger = 0;
+        try{
+            idInteger = Integer.parseInt(id);
+        }
+        catch(final NumberFormatException e){
+            Toast.makeText(this.context, "DB Error: "+ e.getMessage(), Toast.LENGTH_LONG).show();
+            System.out.println("ERROR: COULD NOT PARSE INT");
+        }
+        for (int i = 0; i < studentList.size(); i++){
+
+            if( idInteger == studentList.get(i).getID()){
+                insertAccess(studentList.get(i), "DELETED");
+                SQLiteDatabase db = getReadableDatabase();
+                //TODO: Delete
+                //db.delete(Config.STUDENT_TABLE,Config.COLUMN_ID+" = ?",new String[]{id});
+            }
+        }
+
+
+    }
+
 }
 
