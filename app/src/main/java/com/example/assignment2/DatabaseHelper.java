@@ -20,8 +20,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 1;
     private Context context = null;
-
-    SQLiteDatabase database;
+//TODO: make everything on database
+    private SQLiteDatabase database;
 
     public DatabaseHelper(Context context) {
         super(context, Config.DATABASE_NAME, null, DATABASE_VERSION);
@@ -156,15 +156,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         for (int i = 0; i < studentList.size(); i++){
 
             if( idInteger == studentList.get(i).getID()){
-                insertAccess(studentList.get(i), "DELETED");
+                insertAccess(studentList.get(i), "Deleted");
                 SQLiteDatabase db = getReadableDatabase();
-                //TODO: Delete
                 db.delete(Config.STUDENT_TABLE,Config.COLUMN_ID+" = ?",new String[]{id});
             }
         }
-
-
     }
-
+    public boolean IDExist(int id){
+        List<Student> studentList = getAllStudents();
+        for (int i = 0; i < studentList.size(); i++){
+            if(id == studentList.get(i).getID()){
+                return true;
+            }
+        }
+        return false;
+    }
 }
 

@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -22,12 +23,14 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     protected FloatingActionButton addUserClick;
     protected ListView listView;
+    protected TextView totalStudents;
     private boolean isDisplayUser = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        totalStudents = findViewById(R.id.totalPeople);
 
         addUserClick = findViewById(R.id.addUser);
         listView = findViewById(R.id.studentList);
@@ -69,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
         //get list From database
         DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
         List<Student> studentList = dbHelper.getAllStudents();
+        totalStudents.setText(studentList.size()+" Students, By ID");
         //Add Just names to list to be displayed
         List<String> outputNameList = new ArrayList<String>();
         for (Student s : studentList){
@@ -103,6 +107,7 @@ public class MainActivity extends AppCompatActivity {
         //get list From database
         DatabaseHelper dbHelper = new DatabaseHelper(getApplicationContext());
         List<Student> studentList = dbHelper.getAllStudents();
+        totalStudents.setText(studentList.size()+" Students, By SurName");
         //Add Just names to list to be displayed
         List<String> outputNameList = new ArrayList<String>();
         for (Student s : studentList){

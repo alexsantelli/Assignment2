@@ -51,14 +51,20 @@ public class Popup extends DialogFragment {
                 DatabaseHelper dbhelper = new DatabaseHelper(getActivity());
                 String firstName = firstNameEditText.getText().toString();
                 String lastName = lastNameEditText.getText().toString();
-                String temp = IDEditText.getText().toString();
-                String temp2 = GPAEditText.getText().toString();
-                int ID = Integer.parseInt(temp);
-                double GPA = Double.parseDouble(temp2);
-                if(firstName.isEmpty() || lastName.isEmpty() || ID < 10000000 || ID > 99999999 || GPA < 0 || GPA > 4.30){
-                    Toast.makeText(getActivity(), "Fields cannot be blank or Invalid Entries", Toast.LENGTH_SHORT).show();
+                String tempID = IDEditText.getText().toString();
+                String tempGPA = GPAEditText.getText().toString();
+                if(firstName.isEmpty() || lastName.isEmpty() || tempID.isEmpty() || tempGPA.isEmpty()){
+                    Toast.makeText(getActivity(), "Fields cannot be blank!", Toast.LENGTH_SHORT).show();
+                }
+                else if( dbhelper.IDExist(Integer.parseInt(tempID))){
+                    Toast.makeText(getActivity(), "ID Already Exists! Try Again", Toast.LENGTH_SHORT).show();
+                }
+                else if (Integer.parseInt(tempID) < 10000000 || Integer.parseInt(tempID) > 99999999 || Double.parseDouble(tempGPA) < 0 || Double.parseDouble(tempGPA) > 4.30) {
+                    Toast.makeText(getActivity(), "Invalid Entry! Try Again", Toast.LENGTH_SHORT).show();
                 }
                 else{
+                    int ID = Integer.parseInt(tempID);
+                    double GPA = Double.parseDouble(tempGPA);
                     //getting creation date
                     SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy @ HH:mm:ss");
                     Date todaysDate = new Date();
