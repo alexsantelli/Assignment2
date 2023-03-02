@@ -101,7 +101,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return students;
     }
     public long insertAccess(Student student, String type){
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-mm-dd @ hh:mm:ss");
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd @ HH:mm:ss");
         Date todaysDate = new Date();
         database = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();

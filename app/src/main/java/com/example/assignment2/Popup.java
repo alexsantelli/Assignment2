@@ -66,7 +66,7 @@ public class Popup extends DialogFragment {
                     int ID = Integer.parseInt(tempID);
                     double GPA = Double.parseDouble(tempGPA);
                     //getting creation date
-                    SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy @ HH:mm:ss");
+                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd @ HH:mm:ss");
                     Date todaysDate = new Date();
                     //Inserting new student
                     Student stud = new Student(-1, firstName, lastName, ID, GPA, formatter.format(todaysDate));
