@@ -55,7 +55,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public long insertStudent(Student student){
-        SQLiteDatabase db = this.getWritableDatabase();
+        database = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(Config.COLUMN_NAME, student.getName());
         contentValues.put(Config.COLUMN_SURNAME, student.getSurName());
@@ -63,22 +63,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         contentValues.put(Config.COLUMN_GPA, student.getGPA());
         contentValues.put(Config.COLUMN_DATECREATED, student.getDateCreated());
         try {
-            db.insertOrThrow(Config.STUDENT_TABLE, null, contentValues);
+            database.insertOrThrow(Config.STUDENT_TABLE, null, contentValues);
             return 1;
         }catch (Exception e){
             Toast.makeText(this.context, "DB Error: "+ e.getMessage(), Toast.LENGTH_LONG).show();
             System.out.println("DB error in insertStudents");
             return 0;
         }finally {
-            db.close();
+            database.close();
         }
     }
     public List<Student> getAllStudents(){
         List<Student> students = new ArrayList<>();
-        SQLiteDatabase db = getReadableDatabase();
+        database = getReadableDatabase();
         Cursor cursor = null;
         try{
-            cursor = db.query(Config.STUDENT_TABLE, null, null, null, null, null, null);
+            cursor = database.query(Config.STUDENT_TABLE, null, null, null, null, null, null);
             if (cursor.moveToFirst()){
                 do{
                     @SuppressLint("Range")int count = cursor.getInt(cursor.getColumnIndex(Config.COLUMN_COUNT));
@@ -96,35 +96,35 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             System.out.println("DB error in getAllStudents");
             return Collections.emptyList();
         }finally {
-            db.close();
+            database.close();
         }
         return students;
     }
     public long insertAccess(Student student, String type){
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-mm-dd @ hh:mm:ss");
         Date todaysDate = new Date();
-        SQLiteDatabase db = this.getWritableDatabase();
+        database = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(Config.COLUMN_ID, student.getID());
         contentValues.put(Config.COLUMN_ACCCESSTYPE, type);
         contentValues.put(Config.COLUMN_ACCESSTIME, formatter.format(todaysDate));
         try {
-            db.insertOrThrow(Config.ACCESS_TABLE, null, contentValues);
+            database.insertOrThrow(Config.ACCESS_TABLE, null, contentValues);
             return 1;
         }catch (Exception e){
             Toast.makeText(this.context, "DB Error: "+ e.getMessage(), Toast.LENGTH_LONG).show();
             System.out.println("DB error in insertStudents");
             return 0;
         }finally {
-            db.close();
+            database.close();
         }
     }
     public List<AccessRecord> getAllAccessRecords(){
         List<AccessRecord> records =  new ArrayList<>();
-        SQLiteDatabase db = getReadableDatabase();
+        database = getReadableDatabase();
         Cursor cursor = null;
         try{
-            cursor = db.query(Config.ACCESS_TABLE, null, null, null, null, null, null);
+            cursor = database.query(Config.ACCESS_TABLE, null, null, null, null, null, null);
             if (cursor.moveToFirst()){
                 do{
                     @SuppressLint("Range")int accessID = cursor.getInt(cursor.getColumnIndex(Config.COLUMN_ACCESSID));
@@ -139,7 +139,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             System.out.println("DB error in getAllAccessRecords");
             return Collections.emptyList();
         }finally {
-            db.close();
+            database.close();
         }
         return records;
     }
@@ -147,8 +147,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void deleteStudent(Student student){
         insertAccess(student, "Deleted");
         Integer id = student.getID();
-        SQLiteDatabase db = getReadableDatabase();
-        db.delete(Config.STUDENT_TABLE,Config.COLUMN_ID+" = ?",new String[]{id.toString()});
+        database = getReadableDatabase();
+        database.delete(Config.STUDENT_TABLE,Config.COLUMN_ID+" = ?",new String[]{id.toString()});
     }
     public Student findStudent(String id){
         List<Student> studentList = getAllStudents();
