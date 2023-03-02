@@ -143,7 +143,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
         return records;
     }
-    public void deleteStudent(String id){
+
+    public void deleteStudent(Student student){
+        insertAccess(student, "Deleted");
+        Integer id = student.getID();
+        SQLiteDatabase db = getReadableDatabase();
+        db.delete(Config.STUDENT_TABLE,Config.COLUMN_ID+" = ?",new String[]{id.toString()});
+    }
+    public Student findStudent(String id){
         List<Student> studentList = getAllStudents();
         int idInteger = 0;
         try{
@@ -156,11 +163,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         for (int i = 0; i < studentList.size(); i++){
 
             if( idInteger == studentList.get(i).getID()){
-                insertAccess(studentList.get(i), "Deleted");
-                SQLiteDatabase db = getReadableDatabase();
-                db.delete(Config.STUDENT_TABLE,Config.COLUMN_ID+" = ?",new String[]{id});
+                return studentList.get(i);
             }
         }
+        //Returns first ID in database if ID does not exist
+        return studentList.get(0);
     }
     public boolean IDExist(int id){
         List<Student> studentList = getAllStudents();
